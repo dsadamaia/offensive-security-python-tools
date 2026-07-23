@@ -1,0 +1,16 @@
+import subprocess
+import os
+
+def subdomain_enum(domain):
+    # Run subfinder for subdomain enumeration
+    cmd = f"subfinder -d {domain} -o subdomains.txt"
+    subprocess.run(cmd, shell=True)
+    
+    # Add custom wordlist if available
+    if os.path.exists("custom_sublists.txt"):
+        with open("custom_sublists.txt", "r") as f:
+            custom_domains = f.read().splitlines()
+        
+        with open("subdomains.txt", "a") as f:
+            for domain in custom_domains:
+                f.write(f"{domain}.{domain}\n")
