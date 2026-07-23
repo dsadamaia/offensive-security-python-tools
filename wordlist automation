@@ -1,0 +1,28 @@
+import os
+import random
+
+def generate_wordlist(base_words, iterations=5):
+    wordlist = set(base_words)
+    
+    # Generate variations
+    for _ in range(iterations):
+        new_words = []
+        for word in base_words:
+            # Add prefixes/suffixes
+            prefixes = ["dev_", "test_", "prod_"]
+            suffixes = ["_dev", "_test", "_prod"]
+            
+            for p in prefixes:
+                new_words.append(p + word)
+            for s in suffixes:
+                new_words.append(word + s)
+            
+            # Capitalize first letter
+            new_words.append(word.capitalize())
+            
+            # Add numbers at end
+            new_words.append(word + str(random.randint(1, 100)))
+            
+        wordlist.update(new_words)
+    
+    return sorted(list(wordlist))
