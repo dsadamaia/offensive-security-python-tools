@@ -1,0 +1,14 @@
+import nmap
+
+def port_scan(target):
+    nm = nmap.PortScanner()
+    
+    # Scan with different NSE scripts
+    ports = ["20-443", "8080-9000", "10000-65535"]
+    
+    for port_range in ports:
+        nm.scan(target, arguments=f"-sV -sC --script=default,vuln -p {port_range}")
+        
+        # Save results to JSON file
+        with open(f"{target}_scan_{port_range}.json", "w") as f:
+            json.dump(nm.all_hosts(), f)
