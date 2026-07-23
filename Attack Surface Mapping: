@@ -1,0 +1,29 @@
+from ipaddress import ip_network
+
+def attack_surface_map(target_network):
+    results = {
+        "active_hosts": [],
+        "open_ports": {},
+        "services": {}
+    }
+    
+    # Ping sweep to find active hosts
+    network = ip_network(target_network)
+    for host in network.hosts():
+        try:
+            cmd = f"ping -c 1 {host}"
+            result = subprocess.run(cmd, shell=True, capture_output=True)
+            
+            if "1 received" in result.stdout.decode():
+                results["active_hosts"].append(str(host))
+                
+                # Get open ports
+                cmd = f"nmap -p- {host} | grep 'open'"
+                result = subprocess.run(cmd, shell=True, capture_output=True)
+                
+                if result.stdout:
+                    results["open_ports"][str(host)] = result.stdout.decode().strip()
+        except Exception as e:
+            continue
+    
+    return results
