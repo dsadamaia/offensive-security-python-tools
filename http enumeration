@@ -1,0 +1,24 @@
+from httpx import Client
+import urllib.parse
+
+def http_enum(target):
+    client = Client(verify=False)
+    results = {}
+    
+    # Common paths to check
+    common_paths = ["/", "/login", "/admin", "/config", "/robots.txt"]
+    
+    for path in common_paths:
+        try:
+            url = f"http://{target}{path}"
+            resp = client.get(url, timeout=10)
+            
+            results[path] = {
+                "status": resp.status_code,
+                "headers": dict(resp.headers),
+                "content_length": len(resp.text)
+            }
+        except Exception as e:
+            results[path] = {"error": str(e)}
+    
+    return results
