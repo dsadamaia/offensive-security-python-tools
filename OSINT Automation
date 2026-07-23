@@ -1,0 +1,26 @@
+import requests
+import json
+
+def osint_research(target):
+    results = {}
+    
+    # Shodan API search
+    try:
+        shodan_key = os.environ.get("SHODAN_API_KEY")
+        resp = requests.get(
+            f"https://api.shodan.io/shodan/host/{target}?key={shodan_key}"
+        )
+        results["shodan"] = resp.json()
+    except Exception as e:
+        print(f"Shodan error: {e}")
+    
+    # Censys search
+    try:
+        resp = requests.get(
+            f"https://censys.io/api/v1/search/certificates?q={target}"
+        )
+        results["censys"] = resp.json()
+    except Exception as e:
+        print(f"Censys error: {e}")
+    
+    return results
